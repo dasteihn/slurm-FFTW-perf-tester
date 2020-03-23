@@ -4,6 +4,7 @@ all:
 	cp measprog ./1-node/
 	cp measprog ./2-nodes/
 	cp measprog ./4-nodes/
+	mkdir ./1-node/logfiles ./2-nodes/logfiles ./4-nodes/logfiles
 
 clean:
 	rm mpi-thread-demo.o measprog
