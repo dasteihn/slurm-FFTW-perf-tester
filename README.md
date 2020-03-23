@@ -47,9 +47,6 @@ module load fftw/3.3.8-intel-impi
 make
 ```
 
-## Configuration
-The subdirectories indicate 
-
 ## Running
 
 - switch to the directory indicating how many nodes you want to use
