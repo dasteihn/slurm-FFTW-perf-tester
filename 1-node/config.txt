@@ -1,0 +1,3 @@
+exponent 25
+nr_of_threads 256
+nr_of_fftws 8000
