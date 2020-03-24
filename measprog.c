@@ -70,7 +70,7 @@ time_t sec_timediff(struct timeval tv_start, struct timeval tv_end)
 
 void pretty_printer(struct pretty_time t)
 {
-	printf("%02u:%02u:%02u.%03u\n", t.h, t.m, t.s, t.ms);
+	printf("%02u:%02u:%02u.%03u\n", t.h, t.m, t.s);
 }
 
 void get_config(struct config *cfg)
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 		"\tUsed %u Threads per Node.\n"
 		"\tArray exponent was: %u.\n",
 		cfg.nr_of_fftws, cfg.nr_of_threads, cfg.exponent);
-	printf("\tTook (hh:mm:ss.ms): ");
+	printf("\tTook (hh:mm:ss): ");
 	pretty_printer(pretty_timediff(tv_start, tv_end));
 	printf("\tin seconds: %ld\n", sec_timediff(tv_start, tv_end));
 
