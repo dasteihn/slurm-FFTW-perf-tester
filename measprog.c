@@ -125,11 +125,10 @@ int main(int argc, char **argv)
 	if (threads_ok) {
 		/* this function should be called _before_ fftw_mpi_init */
 		threads_ok = fftw_init_threads();
-		if (!threads_ok) {
-			return EXIT_FAILURE;
-		}
-	} else {
-		fprintf(stderr, "Initializing threads failed.\n");
+	}
+
+	if (!threads_ok) {
+		fprintf(stderr, "Could not initialize threads. Abort.\n");
 		return EXIT_FAILURE;
 	}
 
