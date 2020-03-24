@@ -21,7 +21,7 @@
 #include <math.h>
 #include <sys/time.h>
 
-#define S_TO_US_FACTOR (1ULL * 1000 * 1000)
+#define S_TO_US (1ULL * 1000 * 1000)
 
 #define POTENZ 13u
 #define THREADS_NUM 256u
@@ -34,43 +34,54 @@ struct config {
 	unsigned exponent, nr_of_threads, nr_of_fftws;
 };
 
-
 struct pretty_time {
-	unsigned h, m, s;
+	unsigned h, m, s, us;
 };
 
+
 struct pretty_time
-pretty_timediff(struct timeval tv_start, struct timeval tv_end)
+time_transformer(long long us_diff)
 {
-	struct pretty_time result;
-	long int diff_s = 0;
-	time_t start, end;
+	struct pretty_time result = {};
 
-	start = tv_start.tv_sec;
-	end = tv_end.tv_sec;
+	result.h = us_diff / S_TO_US / 3600;
+	us_diff -= result.h * 3600 * S_TO_US;
 
-	diff_s = end - start;
+	result.m = us_diff / S_TO_US / 60 - result.h * 60;
+	us_diff -= result.m * 60 * S_TO_US;
 
-	if (diff_s <= 0)
-		fprintf(stderr, "*** Severe problem with timestamps. ***\n");
+	result.s = us_diff / S_TO_US;
+	us_diff -= result.s * S_TO_US;
 
-	result.h = diff_s / (60 * 60);
-	result.m = diff_s / 60 - result.h * 60;
-	result.s = diff_s - result.h * 60 * 60 - result.m * 60;
+	result.us = us_diff;
 
 	return result;
 }
 
-
-time_t sec_timediff(struct timeval tv_start, struct timeval tv_end)
+struct pretty_time
+pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 {
-	return tv_end.tv_sec - tv_start.tv_sec;
+	/* 64 bits will be enough for 500 thousand years in microsecs ;) */
+	long long us_start, us_end, us_diff;
+
+	us_start = tv_start.tv_sec * S_TO_US;
+	us_end = tv_end.tv_sec * S_TO_US;
+
+	/* adding something negative is intended. */
+	us_start += tv_start.tv_usec;
+	us_end   += tv_end.tv_usec;
+
+	us_diff = us_end - us_start;
+	if (us_diff <= 0)
+		fprintf(stderr, "*** Severe problem with timestamps. ***\n");
+
+	return time_transformer(us_diff);
 }
 
 
 void pretty_printer(struct pretty_time t)
 {
-	printf("%02u:%02u:%02u.%03u\n", t.h, t.m, t.s);
+	printf("Took: %02u:%02u:%02u.%03u\n", t.h, t.m, t.s, t.us / 1000);
 }
 
 void get_config(struct config *cfg)
@@ -164,9 +175,7 @@ int main(int argc, char **argv)
 		"\tUsed %u Threads per Node.\n"
 		"\tArray exponent was: %u.\n",
 		cfg.nr_of_fftws, cfg.nr_of_threads, cfg.exponent);
-	printf("\tTook (hh:mm:ss): ");
 	pretty_printer(pretty_timediff(tv_start, tv_end));
-	printf("\tin seconds: %ld\n", sec_timediff(tv_start, tv_end));
 
 	return EXIT_SUCCESS;
 }
