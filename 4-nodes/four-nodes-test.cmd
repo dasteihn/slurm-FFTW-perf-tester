@@ -2,7 +2,7 @@
 
 #SBATCH -J fftw_4_node_perftest
 #SBATCH -D ./
-#SBATCH -o ./logfiles/four-nodes/%x.%j.%N.out
+#SBATCH -o ./logfiles/%x.%j.%N.out
 #SBATCH --clusters=mpp3
 #SBATCH --nodes=4
 #SBATCH --get-user-env
