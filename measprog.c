@@ -22,10 +22,6 @@
 #include <sys/time.h>
 
 #define S_TO_US (1ULL * 1000 * 1000)
-
-#define POTENZ 13u
-#define THREADS_NUM 256u
-#define NR_OF_FFTWS (8ULL * 1000)
 #define NR_OF_CFG_ENTRIES 3
 
 int threads_ok;
@@ -77,7 +73,6 @@ pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 
 	return time_transformer(us_diff);
 }
-
 
 void pretty_printer(struct pretty_time t)
 {
@@ -147,8 +142,10 @@ int main(int argc, char **argv)
 	 * of random ram_amount values. */
 	printf("Trying to allocate %lli byte...\n", ram_amount);
 	data = fftw_malloc(ram_amount);
-	if (!data)
+	if (!data) {
+		perror("");
 		return EXIT_FAILURE;
+	}
 
 	puts("allocated!");
 	/* create plan for in-place DFTs */
