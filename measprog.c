@@ -36,32 +36,27 @@ struct config {
 
 
 struct pretty_time {
-	unsigned h, m, s, ms;
+	unsigned h, m, s;
 };
 
 struct pretty_time
 pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 {
 	struct pretty_time result;
-	long int diff_s = 0, diff_us = 0;
+	long int diff_s = 0;
 	time_t start, end;
-	suseconds_t sustart, suend;
 
 	start = tv_start.tv_sec;
 	end = tv_end.tv_sec;
-	sustart = tv_start.tv_usec;
-	suend = tv_end.tv_usec;
 
 	diff_s = end - start;
-	diff_us = suend - sustart;
 
-	if (diff_s <= 0 || diff_us <= 0)
-		fprintf(stderr, "Severe problem with timestamps.\n");
+	if (diff_s <= 0)
+		fprintf(stderr, "*** Severe problem with timestamps. ***\n");
 
 	result.h = diff_s / (60 * 60);
 	result.m = diff_s / 60 - result.h * 60;
 	result.s = diff_s - result.h * 60 * 60 - result.m * 60;
-	result.ms = diff_us / 1000;
 
 	return result;
 }
