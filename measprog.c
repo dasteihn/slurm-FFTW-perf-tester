@@ -26,7 +26,7 @@ struct pretty_time
 pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 {
 	struct pretty_time result;
-	unsigned diff_s = 0, diff_us = 0;
+	long int diff_s = 0, diff_us = 0;
 	time_t start, end;
 	suseconds_t sustart, suend;
 
@@ -38,6 +38,9 @@ pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 	diff_s = end - start;
 	diff_us = suend - sustart;
 
+	if (diff_s <= 0 || diff_us <= 0)
+		fprintf(stderr, "Severe problem with timestamps.\n");
+
 	result.h = diff_s / (60 * 60);
 	result.m = diff_s / 60 - result.h * 60;
 	result.s = diff_s - result.h * 60 * 60 - result.m * 60;
@@ -45,6 +48,13 @@ pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 
 	return result;
 }
+
+
+time_t sec_timediff(struct timeval tv_start, struct timeval tv_end)
+{
+	return tv_end.tv_sec - tv_start.tv_sec;
+}
+
 
 void pretty_printer(struct pretty_time t)
 {
@@ -66,11 +76,8 @@ void get_config(struct config *cfg)
 		goto err;
 	
 	cfg->exponent = scanned[0];
-	printf("exponent: %u\n", scanned[0]);
 	cfg->nr_of_threads = scanned[1];
-	printf("nrt: %u\n", scanned[1]);
 	cfg->nr_of_fftws = scanned[2];
-	printf("nrfftw: %u\n", scanned[2]);
 
 	fclose(fp);
 	return;
@@ -79,23 +86,6 @@ err:
 	if (fp) fclose(fp);
 	perror("get_config");
 	exit(EXIT_FAILURE);
-}
-
-
-unsigned us_timediff(struct timeval tv_start, struct timeval tv_end)
-{
-	unsigned diff=0, sudiff=0;
-	time_t start, end;
-	suseconds_t sustart, suend;
-	start = tv_start.tv_sec;
-	end = tv_end.tv_sec;
-	sustart = tv_start.tv_usec;
-	suend = tv_end.tv_usec;
-
-	diff = end - start;
-	sudiff = suend - sustart;
-
-	return diff * S_TO_US_FACTOR + sudiff;
 }
 
 
@@ -125,7 +115,6 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Initializing threads failed.\n");
 		return EXIT_FAILURE;
 	}
-
 
 	/* At this point, we're ready to initialize MPI and plan with threads */
 	fftw_mpi_init();
@@ -166,7 +155,7 @@ int main(int argc, char **argv)
 		cfg.nr_of_fftws, cfg.nr_of_threads, cfg.exponent);
 	printf("\tTook (hh:mm:ss.ms): ");
 	pretty_printer(pretty_timediff(tv_start, tv_end));
-	printf("\tin microseconds: %u\n", us_timediff(tv_start, tv_end));
+	printf("\tin seconds: %ld\n", sec_timediff(tv_start, tv_end));
 
 	return EXIT_SUCCESS;
 }
