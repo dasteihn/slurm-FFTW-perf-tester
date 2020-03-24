@@ -14,7 +14,8 @@ well.
 Basically, it does:
 
 - Allocate an amount of memory corresponding to a power of 2
-- Use the random data in this allocated RAM to calculate the FFTWs and reverse FFTWs for a certain number of times
+- Use the random data in this allocated RAM to calculate the FFTWs and reverse
+  FFTWs for a certain number of times
 - Measure the time needed for the calculations
 - Log the time into logfiles. Wohoo.
 
@@ -36,7 +37,8 @@ proper parser.
 ### The SLURM Script
 
 > Note:
-Don't forget to add your e-mail-adress in your scripts!
+Don't forget to add your e-mail-adress in your scripts! Otherwise the cluster
+won't inform you that your job has failed and you will be too proud of yourself.
 
 There's also a slurm script for each node configuration in the subfolder. You
 are responsible for adjusting:
@@ -59,6 +61,7 @@ make
 
 ## Running
 
+- If you run for the first time: `make prepare`
 - switch to the directory indicating how many nodes you want to use
 - edit the config file
 - edit the slurm script (`.cmd`)
