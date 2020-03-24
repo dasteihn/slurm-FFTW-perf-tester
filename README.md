@@ -1,7 +1,6 @@
 # slurm-FFTW-perf-tester
 
-This repo measures how fast the FFTW combined with MPI+threads
-calculates stuff on linux clusters using SLURM
+This test measures the FFTWs performance on Linux Clusters using SLURM
 
 It was run on the **Leibniz Rechenzentrum Clusters** in Germany, but should also
 work on other clusters supporting FFTW+MPI
@@ -31,12 +30,23 @@ The config file contains three parameters:
 2. The number of threads to use per node
 3. How often the FFTW-invFFTW-pairs should be done
 
-The order of these parameters is important, because I was too lazy to write a proper parser.
+The order of these parameters is important, because I was too lazy to write a
+proper parser.
 
 ### The SLURM Script
 
-There's also a slurm script for each node configuration in the subfolder.
-You are responsible for adjusting the runtime and the minimum number of threads so it fits your `config.txt`
+> Note:
+Don't forget to add your e-mail-adress in your scripts!
+
+There's also a slurm script for each node configuration in the subfolder. You
+are responsible for adjusting:
+
+- the runtime
+- the minimum number of threads so
+- the approx. needed amount of RAM
+
+The number of threads must always be at least as large as the number specified
+in the config file.
 
 ## Building
 
@@ -52,5 +62,5 @@ make
 - switch to the directory indicating how many nodes you want to use
 - edit the config file
 - edit the slurm script (`.cmd`)
-- Run it: `sbatch 1-node-test.cmd`
+- Run it: `sbatch SLURMSKRIPT.cmd`
 
