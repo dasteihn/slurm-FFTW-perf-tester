@@ -32,6 +32,7 @@ struct config {
 
 struct pretty_time {
 	unsigned h, m, s, us;
+	unsigned long us_runtime;
 };
 
 
@@ -40,6 +41,7 @@ time_transformer(long long us_diff)
 {
 	struct pretty_time result = {};
 
+	result.us_runtime = us_diff;
 	result.h = us_diff / S_TO_US / 3600;
 	us_diff -= result.h * 3600 * S_TO_US;
 
@@ -76,7 +78,8 @@ pretty_timediff(struct timeval tv_start, struct timeval tv_end)
 
 void pretty_printer(struct pretty_time t)
 {
-	printf("Took: %02u:%02u:%02u.%03u\n", t.h, t.m, t.s, t.us / 1000);
+	printf("\tTook: %02u:%02u:%02u.%03u\n", t.h, t.m, t.s, t.us / 1000,
+			"\n\tin microseconds: %lu\n", t.us_runtime);
 }
 
 void get_config(struct config *cfg)
