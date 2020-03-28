@@ -140,9 +140,9 @@ int main(int argc, char **argv)
 	fftw_mpi_init();
 	fftw_plan_with_nthreads(cfg.nr_of_threads);
 
-	/* prepare data for fourier transform.
+	/* prepare data to fourier transform.
 	 * in this example, we will just calculate the transform
-	 * of random ram_amount values. */
+	 * of random RAM bytes */
 	printf("Trying to allocate %lli byte...\n", ram_amount);
 	data = fftw_malloc(ram_amount);
 	if (!data) {
@@ -168,6 +168,7 @@ int main(int argc, char **argv)
 	fftw_destroy_plan(plan_bwd);
 
 	MPI_Finalize();
+	/* FIXME Should you free before or after Finalize? */
 	fftw_free(data);
 
 	gettimeofday(&tv_end, NULL);
