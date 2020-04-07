@@ -42,14 +42,14 @@ time_transformer(long long us_diff)
 	struct pretty_time result = {};
 
 	result.us_runtime = us_diff;
-	result.h = us_diff / S_TO_US / 3600;
-	us_diff -= result.h * 3600 * S_TO_US;
+	result.h = 1.0 * us_diff / S_TO_US / 3600;
+	us_diff -= 1.0 * result.h * 3600 * S_TO_US;
 
-	result.m = us_diff / S_TO_US / 60 - result.h * 60;
-	us_diff -= result.m * 60 * S_TO_US;
+	result.m = 1.0 *  us_diff / S_TO_US / 60 - result.h * 60;
+	us_diff -= 1.0 * result.m * 60 * S_TO_US;
 
-	result.s = us_diff / S_TO_US;
-	us_diff -= result.s * S_TO_US;
+	result.s = 1.0 * us_diff / S_TO_US;
+	us_diff -= 1.0 * result.s * S_TO_US;
 
 	result.us = us_diff;
 
