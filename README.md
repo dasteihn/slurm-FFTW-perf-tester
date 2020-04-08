@@ -14,9 +14,10 @@ well.
 Basically, it does:
 
 - Allocate an amount of memory corresponding to a power of 2
-- Use the random data in this allocated RAM to calculate the FFTWs and reverse
-  FFTWs for a certain number of times
-- Measure the time needed for the calculations
+- Set each byte to 0x00
+- Use these bytes to calculate the FFTWs and reverse FFTWs for a certain number
+  of times
+- Measure the total program runtime.
 - Log the time into logfiles. Wohoo.
 
 ## Configurating
